@@ -17,9 +17,6 @@ dim(data)
 
 str(data)
 summary(data)
-head(data)
-tail(data)
-View(data)
 
 # harmful for population health 
 max(data$FATALITIES)
@@ -46,11 +43,7 @@ count for NA elements
 # for greatest economic consequences
 max(data$PROPDMG)
 max(data$CROPDMG)
+##############
 
 
-The **Total Number of Missing Values**
-    ```{r,echo=TRUE}
-na.identifier <- apply(data[,data$EVTYPE], 1, function(x){any(is.na(x))})
-total.NA <- sum(na.identifier)
-total.NA
 ```

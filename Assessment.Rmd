@@ -1,0 +1,119 @@
+---
+title: "Peer Assessment 02"
+author: "Luis Urbina"
+date: "Wednesday, May 20, 2015"
+output: html_document
+---
+
+## Loading and preprocessing the data
+#### 1.1) Loading the data
+Given the data file 'repdata-data-StormData.csv.bz2', the data is 
+loaded using the `read.csv()` function. The dataset is named **data**.
+
+```{r,cache=TRUE}
+    data = read.csv(bzfile('repdata-data-StormData.csv.bz2'))    
+```
+
+#### 1.2) Exploring the dataset behavior.
+
+```{r,cache=TRUE}
+    dim(data)
+    str(data)
+    summary(data)
+```
+
+#### 1.3) Imputing missing values
+
+## harmful population health and greatest economic consecuences
+The NA values are going to be ignnored in this part of the analysis.
+
+#### 2.1) Total population health harm - MAG
+ 
+The ** MAG maximo** in an event.
+```{r,echo=TRUE}
+    max(data$MAG)
+```
+
+
+The **media of the MAG** acrross the time.
+```{r,echo=TRUE}
+    mean(data$MAG)
+```
+
+
+The **median of the MAG** acrross the time.
+```{r,echo=TRUE}
+    median(data$MAG)
+```
+
+
+The **histogram of MAG** acrross the time.
+```{r,echo=TRUE}
+    hist(unique(data$MAG), breaks=20, col='red')
+```
+
+
+
+#### 2.2) Total population health harm - FATALITIES
+ 
+The **total number of fatalaties** suffered for people.
+```{r,echo=TRUE}
+    sum(data$FATALITIES)
+```
+
+
+The **maximo number of fatalaties** in an event.
+```{r,echo=TRUE}
+    max(data$FATALITIES)
+```
+
+
+The **media of the FATALITIES** acrross the time.
+```{r,echo=TRUE}
+    mean(data$FATALITIES)
+```
+
+
+The **median of the FATALITIES** acrross the time.
+```{r,echo=TRUE}
+    median(data$FATALITIES)
+```
+
+
+The **histogram of fatalaties** in an event.
+
+```{r,echo=TRUE}
+    hist(unique(data$FATALITIES), breaks=20, col='red')
+```
+
+#### 2.3) Total population health harm - INJURIES
+ 
+The **total number of INJURIES** suffered for people.
+```{r,echo=TRUE}
+    sum(data$INJURIES)
+```
+
+
+The **maximo number of INJURIES** in an event.
+```{r,echo=TRUE}
+    max(data$INJURIES)
+```
+
+
+The **media of the INJURIES** acrross the time.
+```{r,echo=TRUE}
+    mean(data$INJURIES)
+```
+
+
+The **median of the INJURIES** acrross the time.
+```{r,echo=TRUE}
+    median(data$INJURIES)
+```
+
+
+The **histogram of INJURIES** in an event.
+
+```{r,echo=TRUE}
+    hist(unique(data$INJURIES), breaks=20, col='green')
+```

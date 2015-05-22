@@ -131,9 +131,28 @@ img {
 <div id="events-with-population-health-harm" class="section level3">
 <h3>Events with Population Health Harm</h3>
 <p>.</p>
-<div id="analisis-of-variables-fatalities-and-injuries" class="section level4">
-<h4>2.3) Analisis of variables: Fatalities and Injuries</h4>
-<p>According to the document, the variables <strong>FATALITIES</strong> and <strong>INJURIES</strong> are directly related with the populationn health harm caused for the storm events. A brief analysis of these variables is next.</p>
+<div id="sanitizing-the-working-variables" class="section level4">
+<h4>2.3) Sanitizing the working variables</h4>
+<p>According to the document, the variables <strong>FATALITIES</strong> and <strong>INJURIES</strong> are directly related with the populationn health harm caused for the storm events. So, before of make a variable analysis, it is performed a sanitizing of the working variables involved.</p>
+<p>Identifying <strong>blank values</strong>, <strong>NA</strong>, and <strong>NULL</strong> in the working sub-dataframe.</p>
+<pre class="r"><code>    tidy.fat.inj &lt;- data[,c(1,2,8,22,23)]
+    blank.id &lt;- apply(tidy.fat.inj, 1, function(x){ifelse(x==&quot;&quot;, TRUE, FALSE)})
+    total.blank &lt;- sum(blank.id)
+    total.blank</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>    na.id &lt;- apply(tidy.fat.inj, 1, function(x){{any(is.na(x))}})
+    total.na &lt;- sum(na.id)
+    total.na</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>    null.id &lt;- apply(tidy.fat.inj, 1, function(x){{any(is.null(x))}})
+    total.null &lt;- sum(null.id)
+    total.null</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>.</p>
+</div>
+<div id="analisis-of-variables-fatalities-and-injuries." class="section level4">
+<h4>2.4) Analisis of variables: Fatalities and Injuries.</h4>
+<p>A brief analysis of these variables is next.</p>
 <pre class="r"><code>    summary(data[,c(23,24)])</code></pre>
 <pre><code>##    FATALITIES          INJURIES        
 ##  Min.   :  0.0000   Min.   :   0.0000  
@@ -159,12 +178,12 @@ img {
 <p>.</p>
 </div>
 <div id="identification-of-events-with-big-impact" class="section level4">
-<h4>2.4) Identification of events with big impact</h4>
-<pre class="r"><code>    data.fat.inj &lt;- rbind(data[(data$FATALITIES &gt; 500),] , data[(data$INJURIES &gt; 500),])
-    data.fat.inj$TOTAL &lt;- data.fat.inj$FATALITIES + data.fat.inj$INJURIES
+<h4>2.5) Identification of events with big impact</h4>
+<pre class="r"><code>    data.fat.inj &lt;- rbind(data[(data$FATALITIES &gt; 500),], 
+                          data[(data$INJURIES &gt; 500),])
+    data.fat.inj$TOTAL &lt;- (data.fat.inj$FATALITIES) + 
+                            (data.fat.inj$INJURIES)
     top.fat.inj &lt;- data.fat.inj[order(-data.fat.inj$TOTAL),]
-    
-    #top.fat.inj[(top.fat.inj$TOTAL &gt; 1000),c(2,7,8,23,24,38)]
     
     head(top.fat.inj[,c(2,7,8,23,24,38)], n=8, row.names=FALSE)</code></pre>
 <pre><code>##                  BGN_DATE STATE    EVTYPE FATALITIES INJURIES TOTAL
@@ -180,6 +199,56 @@ img {
 </div>
 <div id="events-with-greatest-economic-consecuences" class="section level4">
 <h4>Events with Greatest Economic Consecuences</h4>
+<p>According to the document, the variables <strong>PROPDMG</strong>, <strong>PROPDMGEXP</strong>, <strong>CROPDMG</strong>, and <strong>CROPDMGEXP</strong> are directly related with the economic damage caused by the storm events. A brief analysis of these variables is next.</p>
+<p>Identifying <strong>blank values</strong>, <strong>NA</strong>, and <strong>NULL</strong> in the working sub-dataframe.</p>
+<pre class="r"><code>    tidy.pro.dam &lt;- data[,c(25,27)]
+    blank.id &lt;- apply(tidy.pro.dam, 1, function(x){ifelse(x==&quot;&quot;, TRUE, FALSE)})
+    total.blank &lt;- sum(blank.id)
+    total.blank</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>    tidy.pro.dam &lt;- data[,c(26,28)]
+    blank.id &lt;- apply(tidy.pro.dam, 1, function(x){ifelse(x==&quot;&quot;, TRUE, FALSE)})
+    total.blank &lt;- sum(blank.id)
+    total.blank</code></pre>
+<pre><code>## [1] 1084347</code></pre>
+<pre class="r"><code>    na.id &lt;- apply(tidy.pro.dam, 1, function(x){{any(is.na(x))}})
+    total.na &lt;- sum(na.id)
+    total.na</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>    null.id &lt;- apply(tidy.pro.dam, 1, function(x){{any(is.null(x))}})
+    total.null &lt;- sum(null.id)
+    total.null</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>.</p>
+</div>
+<div id="analisis-of-variables" class="section level4">
+<h4>2.3) Analisis of variables</h4>
+<p>.</p>
+<pre class="r"><code>    summary(data[,c(25,27)])</code></pre>
+<pre><code>##     PROPDMG           CROPDMG       
+##  Min.   :   0.00   Min.   :  0.000  
+##  1st Qu.:   0.00   1st Qu.:  0.000  
+##  Median :   0.00   Median :  0.000  
+##  Mean   :  12.06   Mean   :  1.527  
+##  3rd Qu.:   0.50   3rd Qu.:  0.000  
+##  Max.   :5000.00   Max.   :990.000</code></pre>
+<p>.</p>
+<pre class="r"><code>    summary(data[,c(26,28)])</code></pre>
+<pre><code>##    PROPDMGEXP       CROPDMGEXP    
+##         :465934          :618413  
+##  K      :424665   K      :281832  
+##  M      : 11330   M      :  1994  
+##  0      :   216   k      :    21  
+##  B      :    40   0      :    19  
+##  5      :    28   B      :     9  
+##  (Other):    84   (Other):     9</code></pre>
+<p>The <strong>property ratio</strong> and the <strong>crop ratio</strong> are indicators of the impact of the maximum cost in property and crop damaged caused for the biggest event over the total of damage cost caused for the total number of events.</p>
+<pre class="r"><code>    max(data$FATALITIES) * 100 / sum(data$FATALITIES)</code></pre>
+<pre><code>## [1] 3.849455</code></pre>
+<pre class="r"><code>    max(data$INJURIES) * 100 / sum(data$INJURIES)</code></pre>
+<pre><code>## [1] 1.209723</code></pre>
+<p>Considering tha the storm event database has registred 902,297 events, the mean of the variables, (0.0168 and 0.1557 for fatalities and injuries respectively), and the fatalities and injuries ratio, calculated above, also indicates a large number of events of low impact and few events of big impacts.</p>
+<p>So this research will conduct to determine the events with the biggest people health harm.</p>
 </div>
 </div>
 </div>
@@ -196,12 +265,6 @@ img {
 </div>
 <div id="imputing-missing-values" class="section level4">
 <h4>1.3) Imputing missing values</h4>
-<p>The <strong>Total Number of Missing Values</strong></p>
-<pre class="r"><code>    tidy.NA &lt;- data[,c(1,2,8,22,23)]
-    na.identifier &lt;- apply(tidy.NA, 1, function(x){any(is.na(x))})
-    total.NA &lt;- sum(na.identifier)
-    total.NA</code></pre>
-<pre><code>## [1] 0</code></pre>
 </div>
 </div>
 

@@ -12,56 +12,98 @@ data = read.csv(file=url) #, ssl.verifypeer=FALSE
 ## NOT WORK  ########################################################
 
 
-data = read.csv(bzfile('repdata-data-StormData.csv.bz2'))
+data = read.csv(bzfile('repdata-data-StormData.csv.bz2'), header=T, 
+                na.strings=c("", "NA"))
 dim(data)
 #[1] 902297     37
-str(data)
-summary(data)
+
+####
+data_ <- data[,-37]
+data_ <- unique(data_)
+dim(data_)
 
 
-da <- data[,c(2,7,8,22,23,24,25,26,27,28)]
+data$BGN_DATE <- as.Date(data$BGN_DATE, "%m/%d/%Y")
 
-> max(da$PROPDMG)
-[1] 5000
-> unique(da$PROPDMGEXP)
-Levels:  - ? + 0 1 2 3 4 5 6 7 8 B h H K m M
+tidy <- data_[,c(2,5,7,8,23,24,25,26,27,28)]
 
-> max(da$CROPDMG)
-[1] 990
-unique(da$CROPDMGEXP)
-Levels:  ? 0 2 B k K m M
+dmg <- rbind(tidy[tidy$FATALITIES > 500 ,], 
+                tidy[tidy$INJURIES > 500 ,],
+                tidy[tidy$PROPDMGEXP %in% "B",],
+                tidy[tidy$CROPDMGEXP  %in% "B",])
+summary(dmg[,c(4,5,6,7,8,9)])
 
-da.b <- da[(da$PROPDMGEXP=='B')|da$CROPDMGEXP=='B',]
-View(da.b)
+t <- dmg
+t <- apply(t, 1, function(x){ifelse(x=="K", 1000, x)})
+t <- apply(t, 1, function(x){ifelse(x=="M", 1000000, x)})
+t <- apply(t, 1, function(x){ifelse(x=="B", 1000000000, x)})
 
-# identify
-I prefer following way to check whether rows contain any NAs:
-    
-    row.has.na <- apply(final, 1, function(x){any(is.na(x))})
-This returns logical vector with values denoting whether there is any NA in a row. You can use it to see how many rows you'll have to drop:
-
-sum(row.has.na)
-and eventually drop them
-
-final.filtered <- final[!row.has.na,]
-For filtering rows with certain part of NAs it becomes a little trickier (for example, you can feed 'final[,5:6]' to 'apply'). Generally, Joris Meys' solution seems to be more elegant.
+t[is.na(t)] <- 1
+t <- t(t)
+t <- as.data.frame(t)
 
 
-# replacement
-interval.mean
-for (i in 1:(length(da.full[,1]) )) {
-    if (is.na(da.full$steps[i])) 
-        da.full$steps[i] <- interval.mean
-}
-
-# identifying blank values
-
-tidy.NA <- data[,c(22,23)]
-na.identifier <- apply(tidy.NA, 1, function(x){ifelse(x=="", TRUE, FALSE)})
-total.NA <- sum(na.identifier)
-total.NA
+t$tot.harm <- as.numeric(levels(t$FATALITIES)[t$FATALITIES]) +
+                as.numeric(levels(t$INJURIES)[t$INJURIES])
 
 
-tidy.NA <- data[,c(26,28)]
-na.identifier <- apply(tidy.NA, 1, function(x){ifelse(x=="", 1, x)})
-View(na.identifier)
+t$tot.dmg <- as.numeric(levels(t$PROPDMG)[t$PROPDMG]) * 
+            as.numeric(levels(t$PROPDMGEXP)[t$PROPDMGEXP]) +
+            as.numeric(levels(t$CROPDMG)[t$CROPDMG]) * 
+            as.numeric(levels(t$CROPDMGEXP)[t$CROPDMGEXP])
+
+summary(t[,c(11,12)])
+
+top.date <- t[order(t$BGN_DATE),]
+
+top.harm <- t[order(-t$tot.harm),]
+
+top.dmg <- t[order(-t$tot.dmg),]
+
+View(t)
+
+# DONE...!!!
+
+## Sanitizing  ## ## Sanitizing  ## ## Sanitizing  ## ## Sanitizing  ## 
+**sanitizing** 
+    So, before of make a variable analysis, it is performed a sanitizing
+of the working variables involved. 
+
+
+Identifying **blank values**, **NA**, and **NULL** in the working sub-dataframe.
+
+```{r, echo=TRUE, cache=TRUE}
+tidy.fat.inj <- data[,c(23,24)]
+na.id <- apply(tidy.fat.inj, 1, function(x){{any(is.na(x))}})
+total.na <- sum(na.id)
+total.na
+```
+
+Identifying **blank values**, **NA**, and **NULL** in the working sub-dataframe.
+
+```{r, echo=TRUE, cache=TRUE}
+tidy.pro.dam <- data[,c(25,26,27,28)]
+na.id <- apply(tidy.pro.dam, 1, function(x){{any(is.na(x))}})
+total.na <- sum(na.id)
+total.na
+```
+
+```{r, echo=TRUE, cache=TRUE}
+tidy.pro.dam <- data[,c(26,28)]
+na.id <- apply(tidy.pro.dam, 1, function(x){{any(is.na(x))}})
+total.na <- sum(na.id)
+total.na
+```
+
+The property and crop damage columns do not have blank, NA, or NULL values. 
+The property and crop damage extension columns also do not have NA or NULL 
+values, but they have blank values. 
+
+.
+
+
+
+
+
+
+
